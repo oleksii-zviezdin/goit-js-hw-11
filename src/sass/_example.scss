@@ -17,12 +17,3 @@
   padding: 2px 6px;
   border-radius: 2px;
 }
-
-.example .background {
-  height: 240px;
-  // ❗️❗️❗️ The path to images from a SASS file
-  // is always the same as from the css folder.
-  background-image: url('../images/logo.png');
-  background-size: cover;
-  background-position: center;
-}
