@@ -2,8 +2,22 @@ body {
   background-color: #292936;
 }
 
+img {
+  object-fit: cover;
+}
+
+.photo-card {
+  display: block;
+  height: auto;
+}
+
 .is-hiden {
   display: none;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .search-form {
