@@ -69,7 +69,8 @@ function handleLoadMoreEls(e) {
 
 function renderingGallery(img) {
     return img.map(({ webformatURL, tags, likes, views, comments, downloads, largeImageURL, }) => `<div class="photo-card">
-            <img width="350" height="350" src="${webformatURL}" "alt="${tags}" loading="lazy" class="gallery__image" data-source="${largeImageURL}"/>
+            <a class="gallery__link" href="${largeImageURL}">
+            <img width="350" height="350" src="${webformatURL}" "alt="${tags}" loading="lazy" class="gallery__image"/></a>
         <div class="info">
             <p class="info-item">
                 <b class="info-item__statistic">❤️ ${likes}</b>
