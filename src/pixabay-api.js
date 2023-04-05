@@ -11,24 +11,28 @@ export class PixabayAPI {
         per_page: 40,
     }
 
+    get perPage() {
+        return this.#BASE_SEARCH_PARAMS.per_page;
+    }
+
     q = null;
     page = 1;
     
-    fetchPhotos() {
+    async fetchPhotos() {
         const searchParams = new URLSearchParams ({
             q: this.q,            
             ...this.#BASE_SEARCH_PARAMS,
             page: this.page,
         })
 
-        return fetch(`${this.#BASE_URL}?key=${this.#API_KEY}&${searchParams}`)
-            .then(data => {
-                if (!data.ok) {
-                    throw new Error(`Sorry, there are no images matching your search query. Please try again.`);
-                }
-                console.log(data.hits);
-                return data.json();
-            })
-            .catch(err => Notiflix.Notify.failure(err));
+        try {
+            const data = await fetch(`${this.#BASE_URL}?key=${this.#API_KEY}&${searchParams}`);
+            if (!data.ok) {
+                throw new Error(`Sorry, there are no images matching your search query. Please try again`);
+            }
+            return await data.json();
+        } catch (error) {
+            return Notiflix.Notify.failure(error);
+        }
     }
 }
