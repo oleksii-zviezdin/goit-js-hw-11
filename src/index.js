@@ -2,6 +2,7 @@ import Notiflix from "notiflix";
 import { PixabayAPI } from "./pixabay-api";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import simpleLightbox from "simplelightbox";
 
 const galleryLightBox = new SimpleLightbox(`.gallery a`);
 const pixabayAPI = new PixabayAPI();
@@ -19,10 +20,10 @@ loadMoreEl.addEventListener(`click`, handleLoadMoreEls);
 function handleSearchPhotos(e) {
     e.preventDefault();
 
-    const searchQuery = e.target.elements.searchQuery.value.trim();
-    pixabayAPI.q = searchQuery;
+    pixabayAPI.q = e.target.elements.searchQuery.value.trim();
 
     if (!pixabayAPI.q) {
+        Notiflix.Notify.warning(`The field cannot be empty. Please enter a search query`);
         return
     }
     
@@ -35,11 +36,13 @@ function handleSearchPhotos(e) {
                 galleryEl.innerHTML = '';
                 throw new Error()
             } else if (totalPage === pixabayAPI.page) {
-                galleryEl.innerHTML = renderingGallery(data.hits);
-                return loadMoreEl.classList.add("is-hiden");
+                // galleryEl.innerHTML = renderingGallery(data.hits);
+                loadMoreEl.classList.add("is-hiden");
+                return
             }
             Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images`)
             galleryEl.innerHTML = renderingGallery(data.hits);
+            galleryLightBox.refresh();
             loadMoreEl.classList.remove("is-hiden")
         })
         .catch(() => {
@@ -62,15 +65,16 @@ function handleLoadMoreEls(e) {
             }
             
             
-            galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));
+            galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));            
+            galleryLightBox.refresh();
         })
         .catch(() => Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results`));
 }
 
 function renderingGallery(img) {
-    return img.map(({ webformatURL, tags, likes, views, comments, downloads, largeImageURL, }) => `<div class="photo-card">
-            <a class="gallery__link" href="${largeImageURL}">
-            <img width="350" height="350" src="${webformatURL}" "alt="${tags}" loading="lazy" class="gallery__image"/></a>
+    return img.map(({ webformatURL, tags, likes, views, comments, downloads, largeImageURL, }) => `<a class="gallery__link" href="${largeImageURL}"><div class="photo-card">
+            
+            <img src="${webformatURL}" "alt="${tags}" loading="lazy" class="gallery__image"/>
         <div class="info">
             <p class="info-item">
                 <b class="info-item__statistic">❤️ ${likes}</b>
@@ -85,5 +89,5 @@ function renderingGallery(img) {
                 <b class="info-item__statistic">💾 ${downloads}</b>
             </p>
         </div>
-</div>`).join('');
+</div></a>`).join('');
 }

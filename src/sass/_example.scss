@@ -1,3 +1,8 @@
+:root {
+  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration: 250ms;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -9,15 +14,13 @@ body {
 }
 
 img {
-  border-radius: 8px 8px 0 0;
+  // border-radius: 8px 8px 0 0;
   object-fit: cover;
   display: block;
+  overflow:hidden;
 }
 
 .photo-card {
-  scale: 1;
-  flex-basis: calc((100% - (20px * (4 - 1)))/4);
-  transition: box-shadow, scale 250ms;
   background-color: #23232a;
   border-radius: 8px 8px 8px 8px;
   display: block;
@@ -31,34 +34,42 @@ img {
 .info {
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   gap: 15px;
-margin-top: 10px;
-padding: 5px 15px 15px 15px;
-border-radius: 0 0 8px 8px;
+  margin-top: 10px;
+  padding: 5px 15px 15px 15px;
+  // border-radius: 0 0 8px 8px;
 }
 
 .info-item__statistic {
   color: #eeedff;
-  // text-shadow: blue 2px 2px 15px,blue -2px -2px 15px,blue -2px 2px 15px,blue 2px -2px 15px;
+  overflow: hidden;
 }
 
 .gallery {
+  display: grid;
+    max-width: 1720px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-auto-rows: 240px;
+    grid-gap: 35px;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
   margin-left: auto;
   margin-right: auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: center;
-  gap: 20px;
+  // display: flex;
+  // flex-wrap: wrap;
+  // align-items: center;
+  // align-content: center;
+  // gap: 20px;
 
   padding: 25px;
-  padding-top: 95px;
+  padding-top: 100px;
 }
 
 .info {
-  background-color:#23232a;
+  background-color:rgb(35, 35, 42);
 }
 
 .search-fixed {
@@ -77,6 +88,10 @@ border-radius: 0 0 8px 8px;
   height: 70px;
   background-color: #23232a;
   box-shadow: 3px 3px 10px #08080b;
+}
+
+.simple-lightbox {
+  background-color: rgba(35, 35, 42, 0.65);
 }
 
 .search-form:hover,
@@ -124,4 +139,20 @@ div>input{
 
 .photo-card {
   box-shadow: 3px 3px 10px #08080b;
+}
+
+
+
+.gallery__image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform var(--animation-duration) var(--timing-function);
+}
+
+.gallery__link {
+  display: block;
+  border-radius: 8px 8px 8px 8px;
+  text-decoration: none;
+  height: 100%;
 }
