@@ -37,6 +37,7 @@ async function handleSearchPhotos(e) {
             throw new Error()
 
         } else if (totalPage === pixabayAPI.page) {
+            Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images`)
             galleryEl.innerHTML = renderingGallery(data.hits);
             galleryLightBox.refresh();
             loadMoreEl.classList.add("is-hiden");
