@@ -71,6 +71,16 @@ async function handleLoadMoreEls(e) {
         
         galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));
         galleryLightBox.refresh();
+
+        const { height: cardHeight } = document
+        .querySelector(".gallery")
+        .firstElementChild.getBoundingClientRect();
+
+        window.scrollBy({
+        top: cardHeight * 2,
+        behavior: "smooth",
+});
+        
     } catch (error) {
         Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results`);
     }
