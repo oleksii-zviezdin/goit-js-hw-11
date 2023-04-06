@@ -1,6 +1,16 @@
 :root {
+  --card-set-gap: 25px;
+  --search-box-height: 70px;
   --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --animation-duration: 250ms;
+  --animation-duration: 300ms;
+}
+
+.simple-lightbox {
+  background-color: rgba(35, 35, 42, 0.65);
+}
+
+.is-hiden {
+  display: none;
 }
 
 * {
@@ -14,70 +24,67 @@ body {
 }
 
 img {
-  // border-radius: 8px 8px 0 0;
-  object-fit: cover;
   display: block;
-  overflow:hidden;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  margin-left: calc(-1 * var(--card-set-gap));
+  margin-top: calc(-1 * var(--card-set-gap));
+
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  margin-top: calc(var(--search-box-height));
+}
+
+.gallery__link {
+  height: 100%;
+  flex-basis: calc(100% / 4 - var(--card-set-gap));
+  margin-left: var(--card-set-gap);
+  margin-top: var(--card-set-gap);
+
+  background-color: #23232a;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px #08080b;
+  text-decoration: none;
+
+  overflow: hidden;
+
+  transition-property: box-shadow, scale;
+  transition-duration:  var(--animation-duration);
+  transition-timing-function:  var(--timing-function);
+}
+
+.gallery__link:hover,
+.gallery__link:focus {
+  scale: 1.02;
+  box-shadow: 0px 0px 25px blue;
 }
 
 .photo-card {
-  background-color: #23232a;
-  border-radius: 8px 8px 8px 8px;
   display: block;
   height: auto;
-}
 
-.is-hiden {
-  display: none;
+  background-color: #23232a;
+  border-radius: 10px;
 }
 
 .info {
+  padding: 16px;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 15px;
-  margin-top: 10px;
-  padding: 5px 15px 15px 15px;
-  // border-radius: 0 0 8px 8px;
-}
-
-.info-item__statistic {
   color: #eeedff;
-  overflow: hidden;
-}
-
-.gallery {
-  display: grid;
-    max-width: 1720px;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    grid-auto-rows: 240px;
-    grid-gap: 35px;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-  margin-left: auto;
-  margin-right: auto;
-  // display: flex;
-  // flex-wrap: wrap;
-  // align-items: center;
-  // align-content: center;
-  // gap: 20px;
-
-  padding: 25px;
-  padding-top: 100px;
-}
-
-.info {
-  background-color:rgb(35, 35, 42);
-}
-
-.search-fixed {
-  position: fixed;
-  left: 0;
-  right:  0;
-  transform: translate(0%, 0);
-  z-index: 99;
+  background-color: rgb(35, 35, 42);
 }
 
 .search-form {
@@ -85,24 +92,24 @@ img {
   justify-content: center;
   position: relative;
   text-align: center;
-  height: 70px;
+  height: var(--search-box-height);
   background-color: #23232a;
-  box-shadow: 3px 3px 10px #08080b;
+  box-shadow: 3px 3px 15px #08080b;
+
+  transition: box-shadow var(--animation-duration) var(--timing-function);
 }
 
-.simple-lightbox {
-  background-color: rgba(35, 35, 42, 0.65);
+.search-form:hover {
+  box-shadow: 0px 0px 25px blue;
 }
 
-.search-form:hover,
-.photo-card:hover,
-.photo-card:focus{
-  box-shadow: 3px 3px 50px blue;
-}
-
-.photo-card:hover,
-.photo-card:focus {
-  scale: 1.02;
+.search-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translate(0%, 0);
+  z-index: 99;
 }
 
 button {
@@ -110,7 +117,7 @@ button {
   color: #fff;
   padding: 10px 10px 10px 10px;
   background-color: #3333e3;
-  transition: background-color 500ms;
+  transition: background-color var(--animation-duration) var(--timing-function);
 }
 
 body>button {
@@ -119,11 +126,11 @@ body>button {
 
 button:hover,
 button:focus {
+  cursor: pointer;
   background-color: #5e5ed7;
   box-shadow: 0px 0px 15px blue;
   font-weight: 600;
 }
-
 
 form>div{
   position: absolute;
@@ -137,22 +144,9 @@ div>input{
   padding: 10px 10px 10px 10px;
 }
 
-.photo-card {
-  box-shadow: 3px 3px 10px #08080b;
-}
-
-
-
 .gallery__image {
   height: 100%;
   width: 100%;
   object-fit: cover;
   transition: transform var(--animation-duration) var(--timing-function);
-}
-
-.gallery__link {
-  display: block;
-  border-radius: 8px 8px 8px 8px;
-  text-decoration: none;
-  height: 100%;
 }

@@ -2,7 +2,6 @@ import Notiflix from "notiflix";
 import { PixabayAPI } from "./pixabay-api";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import simpleLightbox from "simplelightbox";
 
 const galleryLightBox = new SimpleLightbox(`.gallery a`);
 const pixabayAPI = new PixabayAPI();
@@ -17,7 +16,7 @@ const divSearchEl = document.querySelector(`.search`);
 formEl.addEventListener(`submit`, handleSearchPhotos);
 loadMoreEl.addEventListener(`click`, handleLoadMoreEls);
 
-function handleSearchPhotos(e) {
+async function handleSearchPhotos(e) {
     e.preventDefault();
 
     pixabayAPI.q = e.target.elements.searchQuery.value.trim();
@@ -29,52 +28,59 @@ function handleSearchPhotos(e) {
     
     divSearchEl.classList.add(`search-fixed`)
     pixabayAPI.page = 1;
-    pixabayAPI.fetchPhotos()
-        .then(data => {            
-            const totalPage = Math.ceil(data.totalHits / perPage);
-            if (!data.hits.length) {
-                galleryEl.innerHTML = '';
-                throw new Error()
-            } else if (totalPage === pixabayAPI.page) {
-                // galleryEl.innerHTML = renderingGallery(data.hits);
-                loadMoreEl.classList.add("is-hiden");
-                return
-            }
-            Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images`)
+
+    try {
+        const { data } = await pixabayAPI.fetchPhotos();         
+        const totalPage = Math.ceil(data.totalHits / perPage);
+        if (!data.hits.length) {
+            galleryEl.innerHTML = '';
+            throw new Error()
+
+        } else if (totalPage === pixabayAPI.page) {
             galleryEl.innerHTML = renderingGallery(data.hits);
             galleryLightBox.refresh();
-            loadMoreEl.classList.remove("is-hiden")
-        })
-        .catch(() => {
             loadMoreEl.classList.add("is-hiden");
-            Notiflix.Notify.failure(`Sorry, there are no images matching your search query. Please try again`);
-        });
+            return
+        }
+    
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images`)
+        galleryEl.innerHTML = renderingGallery(data.hits);
+        loadMoreEl.classList.remove("is-hiden")
+        galleryLightBox.refresh();
+    }
+
+        catch (error) {
+        loadMoreEl.classList.add("is-hiden");
+        Notiflix.Notify.failure(`Sorry, there are no images matching your search query. Please try again`);
+    };
 }
 
-function handleLoadMoreEls(e) {
+async function handleLoadMoreEls(e) {
 
     pixabayAPI.page += 1;
 
-    pixabayAPI.fetchPhotos()
-        .then(data => {
-            const totalPage = Math.ceil(data.totalHits / perPage);
-            if (totalPage === pixabayAPI.page) {
-                galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));
-                loadMoreEl.classList.add("is-hiden");
-                throw new Error();
-            }
-            
-            
-            galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));            
-            galleryLightBox.refresh();
-        })
-        .catch(() => Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results`));
+    try {
+        const { data } = await pixabayAPI.fetchPhotos();
+        const totalPage = Math.ceil(data.totalHits / perPage);
+        if (totalPage === pixabayAPI.page) {
+            galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));
+            loadMoreEl.classList.add("is-hiden");
+            throw new Error();
+        }
+        
+        galleryEl.insertAdjacentHTML(`beforeend`, renderingGallery(data.hits));
+        galleryLightBox.refresh();
+    } catch (error) {
+        Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results`);
+    }
 }
 
 function renderingGallery(img) {
-    return img.map(({ webformatURL, tags, likes, views, comments, downloads, largeImageURL, }) => `<a class="gallery__link" href="${largeImageURL}"><div class="photo-card">
-            
+    return img.map(({ webformatURL, tags, likes, views, comments, downloads, largeImageURL, }) => `
+    <a class="gallery__link" href="${largeImageURL}">
+        <div class="photo-card">
             <img src="${webformatURL}" "alt="${tags}" loading="lazy" class="gallery__image"/>
+        
         <div class="info">
             <p class="info-item">
                 <b class="info-item__statistic">❤️ ${likes}</b>
@@ -89,5 +95,6 @@ function renderingGallery(img) {
                 <b class="info-item__statistic">💾 ${downloads}</b>
             </p>
         </div>
-</div></a>`).join('');
+        </div>
+    </a>`).join('');
 }

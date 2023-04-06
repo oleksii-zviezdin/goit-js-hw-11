@@ -1,4 +1,4 @@
-import Notiflix from "notiflix";
+import axios from "axios";
 
 export class PixabayAPI {
     #BASE_URL = `https://pixabay.com/api/`;
@@ -18,24 +18,19 @@ export class PixabayAPI {
     q = null;
     page = 1;
     
-    async fetchPhotos() {
-        const searchParams = new URLSearchParams ({
-            q: this.q,            
-            ...this.#BASE_SEARCH_PARAMS,
-            page: this.page,
-        })
-
-        try {
-            const data = await fetch(`${this.#BASE_URL}?key=${this.#API_KEY}&${searchParams}`);
-            if (!data.ok) {
-                throw new Error(`Sorry, there are no images matching your search query. Please try again`);
-            }
-            return await data.json();
-        } catch (error) {
-            return Notiflix.Notify.failure(error);
-        }
+    fetchPhotos() {
+        return axios.get(`${this.#BASE_URL}?key=${this.#API_KEY}&`,{
+            params: {
+                q: this.q,
+                ...this.#BASE_SEARCH_PARAMS,
+                page: this.page,
+        },
+    });
     }
 }
+
+
+// import Notiflix from "notiflix";
 
 // export class PixabayAPI {
 //     #BASE_URL = `https://pixabay.com/api/`;
@@ -54,16 +49,22 @@ export class PixabayAPI {
 
 //     q = null;
 //     page = 1;
-
-
     
-//     fetchPhotos() {
-//         return axios.get(`${this.#BASE_URL}?key=${this.#API_KEY}&`,{
-//             searchParams: {
-//                 q: this.q,
-//                 ...this.#BASE_SEARCH_PARAMS,
-//                 page: this.page,
-//         },
-//     });
+//     async fetchPhotos() {
+//         const searchParams = new URLSearchParams ({
+//             q: this.q,            
+//             ...this.#BASE_SEARCH_PARAMS,
+//             page: this.page,
+//         })
+
+//         try {
+//             const data = await fetch(`${this.#BASE_URL}?key=${this.#API_KEY}&${searchParams}`);
+//             if (!data.ok) {
+//                 throw new Error(`Sorry, there are no images matching your search query. Please try again`);
+//             }
+//             return await data.json();
+//         } catch (error) {
+//             return Notiflix.Notify.failure(error);
+//         }
 //     }
 // }
